@@ -2,6 +2,7 @@ import asyncio
 import string
 import random
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from redis.asyncio import Redis
@@ -10,6 +11,8 @@ from pydantic import BaseModel
 from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 import os
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
 
@@ -69,6 +72,14 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://localhost:3001"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Routes
 @app.post("/shorten")
 async def shorten_url(url_create: URLCreate, session: AsyncSession = Depends(get_session)):
@@ -100,17 +111,23 @@ redis_client = Redis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True)
 
 @app.get("/r/{short_code}")
 async def redirect_url(short_code: str, session: AsyncSession = Depends(get_session)):
-    # check redis cache first
+    # Try Redis first
     cached_url = await redis_client.get(f"url:{short_code}")
     if cached_url:
-        return {"original_url": cached_url}
-    # if not in cache, check database
+        return RedirectResponse(cached_url, status_code=301)
+
+    # Fallback to Postgres
     result = await session.execute(select(URL).where(URL.short_code == short_code))
     url_obj = result.scalars().first()
     if not url_obj:
         raise HTTPException(status_code=404, detail="Short code not found")
 
+    # Cache in Redis
+    await redis_client.set(f"url:{short_code}", url_obj.original_url, ex=3600)
+
+    return RedirectResponse(url_obj.original_url, status_code=301)
+
     # cache the result in redis
     await redis_client.set(f"url:{short_code}", url_obj.original_url)
-    
+
     return {"original_url": url_obj.original_url}
