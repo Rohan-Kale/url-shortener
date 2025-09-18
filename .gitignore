@@ -1,1 +1,2 @@
-*.env
+# ignore environment variables file
+.env
