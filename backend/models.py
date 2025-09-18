@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String
-from .db import Base
+from db import Base
 from sqlalchemy.ext.asyncio import AsyncSession
-from .models import URL
 
 class URL(Base):
     __tablename__ = "urls"
