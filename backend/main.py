@@ -74,7 +74,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001"],
+    allow_origins=["http://localhost:3000", "http://localhost:3001", "http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -125,9 +125,5 @@ async def redirect_url(short_code: str, session: AsyncSession = Depends(get_sess
     # Cache in Redis
     await redis_client.set(f"url:{short_code}", url_obj.original_url, ex=3600)
 
+    # Redirect the user
     return RedirectResponse(url_obj.original_url, status_code=301)
-
-    # cache the result in redis
-    await redis_client.set(f"url:{short_code}", url_obj.original_url)
-
-    return {"original_url": url_obj.original_url}
