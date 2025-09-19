@@ -1,28 +1,17 @@
 import React, { useState } from "react";
-import ShortenUrlForm from "./components/ShortenUrlForm";
-import UrlList from "./components/UrlList"; // your existing list component
+import UrlForm from "./components/UrlForm";
+import UrlList from "./components/UrlList";
 
-function App() {
+export default function App() {
   const [urls, setUrls] = useState([]);
 
-  const handleShorten = (originalUrl) => {
-    // call backend /shorten API and update urls
-    // example:
-    fetch("http://localhost:8000/shorten", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ original_url: originalUrl }),
-    })
-      .then((res) => res.json())
-      .then((data) => setUrls((prev) => [data, ...prev]));
-  };
-
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <ShortenUrlForm onShorten={handleShorten} />
-      <UrlList urls={urls} />
+    <div className="min-h-screen w-screen flex flex-col items-center justify-start bg-gray-100 px-4 pt-10">
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">🔗 URL Shortener</h1>
+
+      <UrlForm urls={urls} setUrls={setUrls} />
+
+      {urls.length > 0 && <UrlList urls={urls} />}
     </div>
   );
 }
-
-export default App;
