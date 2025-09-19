@@ -14,7 +14,7 @@ Includes analytics dashboard (React + Tailwind) for link insights.
 - **Backend**: FastAPI (Python)
 - **Database**: PostgreSQL, Redis (cache)
 - **Frontend**: React + Tailwind 
-- **Deployment**: Docker, Heroku/Vercel/AWS
+- **Deployment**: Docker
 
 ## 📂 Architecture
 ![Architecture Diagram](docs/architecture.png)
