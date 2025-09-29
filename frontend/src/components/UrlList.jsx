@@ -6,7 +6,7 @@ export default function UrlList({ urls }) {
       {urls.map((item, index) => (
         <div
           key={index}
-          className="p-3 bg-white rounded-lg shadow-soft flex justify-between items-center"
+          className="p-3 backdrop-blur-md bg-blue/10 border border-sky-300/20 text-white py-3 rounded-lg shadow-soft flex justify-between items-center"
         >
           {/* Original URL */}
           <p className="text-gray-700 break-all">{item.original_url}</p>

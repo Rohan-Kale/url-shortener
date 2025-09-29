@@ -42,12 +42,12 @@ export default function UrlForm({ urls, setUrls }) {
         value={url}
         onChange={(e) => setUrl(e.target.value)}
         required
-        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:text-gray-400 bg-transparent"
       />
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition duration-200 font-medium disabled:opacity-50"
+        className="w-full rounded-lg p-6 shadow-lg backdrop-blur-sm bg-blue/10 border border-sky-300/20 text-white py-3 hover:bg-indigo-700 transition duration-200 font-medium disabled:opacity-50"
       >
         {loading ? "Shortening..." : "Shorten URL"}
       </button>
